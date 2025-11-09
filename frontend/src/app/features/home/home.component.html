@@ -1,0 +1,52 @@
+<div class="home-container">
+  <div class="welcome-section">
+    <h2>Welcome to Collabolt</h2>
+    <p class="subtitle">AI-Powered Development Workflow Template</p>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h3>🎯 Features</h3>
+      <ul>
+        <li>Angular 17 Frontend</li>
+        <li>NestJS Backend with OpenAPI</li>
+        <li>Supabase Database & Auth</li>
+        <li>Docker Compose Setup</li>
+        <li>Auto-generated TypeScript Interfaces</li>
+      </ul>
+    </div>
+
+    <div class="info-card status-card">
+      <h3>🏥 Backend Health</h3>
+      <div *ngIf="healthStatus" class="health-info">
+        <p><strong>Status:</strong> {{ healthStatus.status }}</p>
+        <p><strong>Environment:</strong> {{ healthStatus.environment }}</p>
+        <p><strong>Uptime:</strong> {{ healthStatus.uptime | number:'1.0-0' }}s</p>
+      </div>
+      <div *ngIf="!healthStatus" class="health-info">
+        <p>Connecting to backend...</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>👤 Auth Status</h3>
+      <div *ngIf="currentUser" class="auth-info">
+        <p><strong>Logged in as:</strong></p>
+        <p>{{ currentUser.email }}</p>
+      </div>
+      <div *ngIf="!currentUser" class="auth-info">
+        <p>Not logged in</p>
+      </div>
+    </div>
+
+    <div class="info-card">
+      <h3>🚀 Getting Started</h3>
+      <ol>
+        <li>Start containers: <code>docker-compose up</code></li>
+        <li>Generate OpenAPI: <code>npm run generate:openapi</code></li>
+        <li>Generate API types: <code>npm run generate:api</code></li>
+        <li>Start building your features!</li>
+      </ol>
+    </div>
+  </div>
+</div>
