@@ -9,6 +9,7 @@ import { SupabaseService } from '@app/core/services/supabase.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   template: `
+    <!-- UNSTYLED TEMPLATE: Style this form according to your design requirements -->
     <div class="auth-container">
       <div class="auth-card">
         <h1>Login</h1>
@@ -57,102 +58,7 @@ import { SupabaseService } from '@app/core/services/supabase.service';
       </div>
     </div>
   `,
-  styles: [`
-    .auth-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      padding: 1rem;
-      background: #f5f5f5;
-    }
-
-    .auth-card {
-      background: white;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    h1 {
-      margin: 0 0 1.5rem 0;
-      color: #333;
-      text-align: center;
-    }
-
-    .form-group {
-      margin-bottom: 1rem;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      color: #555;
-      font-weight: 500;
-    }
-
-    input {
-      width: 100%;
-      padding: 0.75rem;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 1rem;
-      box-sizing: border-box;
-    }
-
-    input:focus {
-      outline: none;
-      border-color: #4CAF50;
-    }
-
-    input.error {
-      border-color: #f44336;
-    }
-
-    .error-message {
-      color: #f44336;
-      font-size: 0.875rem;
-      margin-top: 0.25rem;
-    }
-
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      background: #4CAF50;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-
-    button:hover:not(:disabled) {
-      background: #45a049;
-    }
-
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    .auth-link {
-      text-align: center;
-      margin-top: 1rem;
-      color: #666;
-    }
-
-    .auth-link a {
-      color: #4CAF50;
-      text-decoration: none;
-    }
-
-    .auth-link a:hover {
-      text-decoration: underline;
-    }
-  `]
+  styles: []
 })
 export class LoginComponent {
   loginForm: FormGroup;
