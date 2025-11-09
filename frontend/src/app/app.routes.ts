@@ -4,20 +4,27 @@ import { authGuard } from './core/guards/auth.guard';
 export const routes: Routes = [
   {
     path: '',
-    loadComponent: () => import('./features/home/home.component').then(m => m.HomeComponent)
+    redirectTo: '/app',
+    pathMatch: 'full'
+  },
+  {
+    path: 'app',
+    loadComponent: () => import('./features/main-app/main-app.component').then(m => m.MainAppComponent),
+    canActivate: [authGuard],
+    title: 'Collabolt - AI Chat'
   },
   {
     path: 'login',
-    loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent)
+    loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent),
+    title: 'Login - Collabolt'
   },
   {
     path: 'signup',
-    loadComponent: () => import('./features/auth/signup/signup.component').then(m => m.SignupComponent)
+    loadComponent: () => import('./features/auth/signup/signup.component').then(m => m.SignupComponent),
+    title: 'Sign Up - Collabolt'
   },
-  // Example of protected route:
-  // {
-  //   path: 'dashboard',
-  //   loadComponent: () => import('./features/dashboard/dashboard.component').then(m => m.DashboardComponent),
-  //   canActivate: [authGuard]
-  // },
+  {
+    path: '**',
+    redirectTo: '/app'
+  }
 ];

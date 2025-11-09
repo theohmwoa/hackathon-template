@@ -1,0 +1,264 @@
+.main-app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--app-bg);
+}
+
+// Header
+.app-header {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+}
+
+.header-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.app-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  background: linear-gradient(135deg, var(--button-primary), var(--button-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.app-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px;
+  background: var(--user-info-bg);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: all 200ms ease-out;
+
+  &:hover {
+    background: var(--hover-bg);
+    border-color: var(--text-secondary);
+  }
+}
+
+.user-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--button-primary), var(--button-hover));
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.user-email {
+  font-size: 13px;
+  color: var(--text-primary);
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 200ms ease-out;
+
+  &:hover {
+    background: rgba(237, 66, 69, 0.1);
+    border-color: #ed4245;
+    color: #ed4245;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  svg {
+    transition: transform 200ms ease-out;
+  }
+
+  &:hover svg {
+    transform: translateX(-2px);
+  }
+}
+
+// Main Layout: 15/85 Split (CRITICAL!)
+.app-layout {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 15% 85%;
+  height: calc(100vh - 60px); // Subtract header height
+  overflow: hidden;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 20% 80%;
+  }
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+}
+
+// Chat Sidebar Container (15%)
+.chat-sidebar-container {
+  grid-column: 1;
+  border-right: 1px solid var(--border-color);
+  overflow: hidden;
+  background: var(--sidebar-bg);
+  animation: slideInLeft 400ms ease-out;
+
+  @media (max-width: 768px) {
+    grid-row: 1;
+    max-height: 40vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+  }
+}
+
+// Preview Panel Container (85%)
+.preview-panel-container {
+  grid-column: 2;
+  overflow: hidden;
+  background: var(--preview-bg);
+  animation: slideInRight 400ms ease-out;
+
+  @media (max-width: 768px) {
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+
+// Animations
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// Responsive breakpoints
+@media (max-width: 1024px) {
+  .app-header {
+    padding: 10px 16px;
+  }
+
+  .app-title {
+    font-size: 18px;
+  }
+
+  .app-subtitle {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 768px) {
+  .app-header {
+    padding: 8px 12px;
+  }
+
+  .header-left {
+    gap: 8px;
+  }
+
+  .app-title {
+    font-size: 16px;
+  }
+
+  .app-subtitle {
+    display: none;
+  }
+
+  .header-right {
+    gap: 8px;
+  }
+
+  .user-info {
+    padding: 4px 8px;
+  }
+
+  .user-avatar {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .btn-logout {
+    padding: 6px 10px;
+    font-size: 12px;
+
+    span {
+      display: none;
+    }
+  }
+}
+
+// Print styles
+@media print {
+  .app-header,
+  .chat-sidebar-container {
+    display: none;
+  }
+
+  .preview-panel-container {
+    grid-column: 1 / -1;
+  }
+}

@@ -13,17 +13,18 @@ generate_secret() {
   openssl rand -base64 32 | tr -d "=+/" | cut -c1-${1:-32}
 }
 
-# Function to generate JWT token (needs to be at least 32 chars)
-generate_jwt() {
-  openssl rand -base64 48 | tr -d "=+/" | cut -c1-64
-}
-
 # Generate secrets
 POSTGRES_PASSWORD=$(generate_secret 32)
-JWT_SECRET=$(generate_jwt)
 SECRET_KEY_BASE=$(generate_secret 64)
 
-# Generate Supabase keys (simplified - in production, use proper JWT generation)
+# JWT Secret - MUST match the secret used to sign the Supabase demo keys below
+# The demo ANON_KEY and SERVICE_KEY are signed with this specific secret
+# Do NOT change this unless you also regenerate the JWT keys with a new secret
+JWT_SECRET="super-secret-jwt-token-with-at-least-32-characters-long"
+
+# Supabase JWT keys (demo keys for development)
+# These are signed with the JWT_SECRET above
+# For production: Generate new keys with your own JWT_SECRET using jwt.io or similar
 ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6ImFub24iLCJleHAiOjE5ODM4MTI5OTZ9.CRXP1A7WOeoJeXxjNni43kdQwgnWNReilDMblYTn_I0"
 SERVICE_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS1kZW1vIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImV4cCI6MTk4MzgxMjk5Nn0.EGIM96RAZx35lJzdJsyH-qQwv8Hdp7fsn3W0YpN81IU"
 

@@ -1,0 +1,120 @@
+<div
+  class="dialog-backdrop"
+  (click)="onBackdropClick($event)"
+  (keydown)="onEscapeKey($event)"
+  tabindex="-1"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dialog-title"
+>
+  <div class="dialog-container">
+    <!-- Dialog Header -->
+    <div class="dialog-header">
+      <h2 id="dialog-title" class="dialog-title">Create New Project</h2>
+      <button
+        class="btn-close"
+        (click)="closeDialog()"
+        aria-label="Close dialog"
+        type="button"
+      >
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 5L5 15M5 5L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Error Alert -->
+    <div *ngIf="error" class="alert-error" role="alert">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M8 4V9M8 12V12.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <span>{{ error }}</span>
+    </div>
+
+    <!-- Dialog Content -->
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="dialog-content">
+      <!-- Project Name -->
+      <div class="form-group">
+        <label for="project-name" class="form-label">
+          Project Name <span class="required">*</span>
+        </label>
+        <input
+          id="project-name"
+          type="text"
+          formControlName="name"
+          class="form-input"
+          [class.invalid]="name?.invalid && name?.touched"
+          placeholder="My Awesome Project"
+          aria-required="true"
+          aria-describedby="name-error"
+          [attr.aria-invalid]="name?.invalid && name?.touched"
+        />
+        <div
+          *ngIf="name?.invalid && name?.touched"
+          id="name-error"
+          class="form-error"
+          role="alert"
+        >
+          <span *ngIf="name?.hasError('required')">Project name is required</span>
+          <span *ngIf="name?.hasError('maxlength')">
+            Project name cannot exceed 255 characters
+          </span>
+        </div>
+      </div>
+
+      <!-- Project Description -->
+      <div class="form-group">
+        <label for="project-description" class="form-label">
+          Description <span class="optional">(Optional)</span>
+        </label>
+        <textarea
+          id="project-description"
+          formControlName="description"
+          class="form-textarea"
+          rows="4"
+          placeholder="Describe your project..."
+          aria-describedby="description-hint"
+        ></textarea>
+        <p id="description-hint" class="form-hint">
+          Add a brief description to help you remember what this project is about
+        </p>
+      </div>
+
+      <!-- Dialog Actions -->
+      <div class="dialog-actions">
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="closeDialog()"
+          [disabled]="isSubmitting"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          class="btn-primary"
+          [disabled]="isSubmitting"
+          [attr.aria-busy]="isSubmitting"
+        >
+          <span *ngIf="!isSubmitting">Create Project</span>
+          <span *ngIf="isSubmitting" class="btn-loading">
+            <svg class="spinner" width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <circle
+                cx="8"
+                cy="8"
+                r="6"
+                stroke="currentColor"
+                stroke-width="2"
+                fill="none"
+                stroke-dasharray="30"
+                stroke-dashoffset="10"
+              />
+            </svg>
+            Creating...
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

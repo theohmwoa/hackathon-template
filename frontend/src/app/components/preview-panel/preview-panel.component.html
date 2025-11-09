@@ -1,0 +1,47 @@
+<div class="preview-panel">
+  <!-- Loading Overlay -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-spinner">
+      <svg class="spinner-icon" width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <circle
+          cx="24"
+          cy="24"
+          r="20"
+          stroke="currentColor"
+          stroke-width="4"
+          fill="none"
+          stroke-dasharray="100"
+          stroke-dashoffset="25"
+        />
+      </svg>
+      <p class="loading-text">Loading preview...</p>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="error && !loading" class="error-state">
+    <div class="error-icon">
+      <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="32" cy="32" r="28" stroke="currentColor" stroke-width="3"/>
+        <path d="M32 20V36M32 44V44.5" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <h3 class="error-title">Failed to Load Preview</h3>
+    <p class="error-description">
+      The preview could not be loaded. This might be due to security restrictions or network issues.
+    </p>
+  </div>
+
+  <!-- Preview Iframe -->
+  <iframe
+    *ngIf="!error"
+    [src]="previewUrl"
+    (load)="onIframeLoad()"
+    (error)="onIframeError()"
+    class="preview-iframe"
+    [class.loaded]="!loading"
+    sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"
+    title="Preview panel"
+    aria-label="Preview content"
+  ></iframe>
+</div>

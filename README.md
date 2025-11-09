@@ -93,6 +93,62 @@ A production-ready full-stack application template designed for rapid deployment
 └── docker-compose.yml    # All services configuration
 ```
 
+## Database and Auth Setup
+
+### Supabase Authentication
+
+The template includes a pre-configured Supabase auth setup that:
+
+1. **Creates the complete `auth.users` table** with all columns required by GoTrue (Supabase Auth)
+2. **Provides auth helper functions** (`auth.uid()`, `auth.role()`) for RLS policies
+3. **Sets proper ownership** to `supabase_auth_admin` for GoTrue migrations
+4. **Configures JWT secrets** that match the Supabase demo keys
+
+### Important Notes
+
+#### UUID Generation
+
+Always use `gen_random_uuid()` instead of `uuid_generate_v4()`:
+
+```sql
+-- ✅ Correct - built-in PostgreSQL function
+id UUID PRIMARY KEY DEFAULT gen_random_uuid()
+
+-- ❌ Wrong - requires uuid-ossp extension
+id UUID PRIMARY KEY DEFAULT uuid_generate_v4()
+```
+
+The `gen_random_uuid()` function is built into PostgreSQL 13+ and doesn't require any extensions.
+
+#### JWT Secret Configuration
+
+The template uses Supabase demo keys for development. **IMPORTANT:**
+
+- The `JWT_SECRET` in `.env` **must match** the secret used to sign `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_KEY`
+- Demo secret: `super-secret-jwt-token-with-at-least-32-characters-long`
+- Demo keys are **PUBLIC** - never use them in production!
+
+For production deployment:
+1. Generate a new `JWT_SECRET`: `openssl rand -base64 48 | tr -d "=+/" | cut -c1-64`
+2. Generate new Supabase keys using your `JWT_SECRET` at https://supabase.com/docs/guides/auth/jwts
+3. Update all three values in `.env`
+
+#### Row Level Security (RLS)
+
+You can safely use `auth.uid()` and `auth.role()` in RLS policies:
+
+```sql
+-- Users can only access their own data
+CREATE POLICY "Users can view own posts" ON public.posts
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Service role can access all data
+CREATE POLICY "Service role has full access" ON public.posts
+  FOR ALL USING (auth.role() = 'service_role');
+```
+
+These functions are created during database initialization and are available immediately.
+
 ## Development Workflow
 
 ### 1. Generate Database Schema
@@ -102,7 +158,7 @@ Add SQL files to `database/init/` with sequential numbering:
 ```sql
 -- database/init/02-posts.sql
 CREATE TABLE IF NOT EXISTS public.posts (
-  id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   title TEXT NOT NULL,
   content TEXT,

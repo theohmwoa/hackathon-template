@@ -1,0 +1,158 @@
+.preview-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: var(--preview-bg);
+  overflow: hidden;
+}
+
+// Preview Iframe
+.preview-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  opacity: 0;
+  transition: opacity 400ms ease-out;
+
+  &.loaded {
+    opacity: 1;
+  }
+}
+
+// Loading Overlay
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--preview-bg);
+  z-index: 10;
+  animation: fadeIn 300ms ease-out;
+}
+
+.loading-spinner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.spinner-icon {
+  color: var(--button-primary);
+  animation: spin 1.5s linear infinite;
+}
+
+.loading-text {
+  color: var(--text-secondary);
+  font-size: 14px;
+  margin: 0;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+// Error State
+.error-state {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+  text-align: center;
+  background: var(--preview-bg);
+  animation: fadeSlideIn 400ms ease-out;
+}
+
+.error-icon {
+  color: #ed4245;
+  margin-bottom: 24px;
+  animation: shake 500ms ease-out;
+}
+
+.error-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0 0 12px 0;
+}
+
+.error-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 400px;
+  margin: 0;
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(-8px) rotate(-5deg);
+  }
+  75% {
+    transform: translateX(8px) rotate(5deg);
+  }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .error-state {
+    padding: 24px;
+  }
+
+  .error-title {
+    font-size: 18px;
+  }
+
+  .error-description {
+    font-size: 13px;
+  }
+}
