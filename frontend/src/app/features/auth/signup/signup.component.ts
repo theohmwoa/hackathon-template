@@ -70,6 +70,19 @@ import { SupabaseService } from '@app/core/services/supabase.service';
           </button>
         </form>
 
+        <div class="divider">
+          <span>OR</span>
+        </div>
+
+        <div class="oauth-buttons">
+          <button type="button" class="oauth-button github" (click)="signInWithGithub()" [disabled]="loading">
+            <span>Continue with GitHub</span>
+          </button>
+          <button type="button" class="oauth-button google" (click)="signInWithGoogle()" [disabled]="loading">
+            <span>Continue with Google</span>
+          </button>
+        </div>
+
         <div class="auth-link">
           Already have an account? <a routerLink="/login">Login</a>
         </div>
@@ -126,6 +139,32 @@ export class SignupComponent {
     } catch (error: any) {
       this.errorMessage = error.message || 'Signup failed. Please try again.';
     } finally {
+      this.loading = false;
+    }
+  }
+
+  async signInWithGithub() {
+    this.loading = true;
+    this.errorMessage = '';
+
+    try {
+      await this.supabaseService.signInWithGithub();
+      // OAuth will redirect automatically, no need to handle navigation here
+    } catch (error: any) {
+      this.errorMessage = error.message || 'GitHub sign-in failed. Please try again.';
+      this.loading = false;
+    }
+  }
+
+  async signInWithGoogle() {
+    this.loading = true;
+    this.errorMessage = '';
+
+    try {
+      await this.supabaseService.signInWithGoogle();
+      // OAuth will redirect automatically, no need to handle navigation here
+    } catch (error: any) {
+      this.errorMessage = error.message || 'Google sign-in failed. Please try again.';
       this.loading = false;
     }
   }

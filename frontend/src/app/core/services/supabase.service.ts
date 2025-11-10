@@ -61,6 +61,30 @@ export class SupabaseService {
     if (error) throw error;
   }
 
+  async signInWithGithub() {
+    const { data, error } = await this.supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+
+    if (error) throw error;
+    return data;
+  }
+
+  async signInWithGoogle() {
+    const { data, error } = await this.supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    });
+
+    if (error) throw error;
+    return data;
+  }
+
   async getSession() {
     const { data: { session } } = await this.supabase.auth.getSession();
     return session;
