@@ -4,14 +4,15 @@ A production-ready full-stack application template designed for rapid deployment
 
 ## Features
 
-- **Backend**: NestJS with TypeScript, OpenAPI/Swagger documentation
-- **Frontend**: Angular 17+ with standalone components, type-safe API integration
-- **Database**: Supabase (PostgreSQL) with Row Level Security (RLS)
-- **Authentication**: JWT-based auth with Supabase
-- **API Gateway**: Kong for routing and CORS
-- **Docker**: Complete docker-compose setup for all services
+- **Backend**: NestJS with TypeScript, OpenAPI/Swagger documentation (runs natively with PM2)
+- **Frontend**: Angular 17+ with standalone components, type-safe API integration (runs natively with PM2)
+- **Database**: Supabase (PostgreSQL) with Row Level Security (RLS) (runs in Docker)
+- **Authentication**: JWT-based auth with Supabase (runs in Docker)
+- **API Gateway**: Kong for routing and CORS (runs in Docker)
+- **Process Manager**: PM2 for backend/frontend with live reload and watch mode
 - **Type Safety**: End-to-end TypeScript with OpenAPI-generated types
 - **VPS-Ready**: Optimized for deployment to any VPS (DigitalOcean, Linode, etc.)
+- **Hot Reload**: Instant feedback during development - see changes as you code!
 
 ## Quick Start
 
@@ -19,6 +20,7 @@ A production-ready full-stack application template designed for rapid deployment
 
 - Node.js 18+ and npm
 - Docker and Docker Compose
+- PM2 (will be installed automatically)
 - A VPS with at least 2GB RAM (for deployment)
 
 ### Local Development
@@ -40,21 +42,60 @@ A production-ready full-stack application template designed for rapid deployment
    - Install dependencies
    - Set up the database
 
-3. **Start all services**:
+3. **Start the development environment**:
+
+   **Option 1 - Quick start (recommended)**:
    ```bash
-   docker-compose up -d
+   ./start.sh
+   ```
+   This will:
+   - Start Supabase services in Docker
+   - Start backend and frontend with PM2
+   - Enable live reload and watch mode
+
+   **Option 2 - Manual start**:
+   ```bash
+   npm install              # Install PM2
+   npm run dev              # Start everything
    ```
 
-4. **Check service health**:
+4. **Monitor your applications**:
    ```bash
-   ./scripts/check-errors.sh
+   pm2 logs                 # View all logs
+   pm2 logs backend         # View backend logs only
+   pm2 logs frontend        # View frontend logs only
+   pm2 monit                # Interactive monitoring
+   pm2 status               # Check process status
    ```
 
-5. **Access the application**:
+5. **Stop the development environment**:
+   ```bash
+   ./stop.sh                # Stop everything
+   # OR
+   npm run stop             # Stop PM2 processes only
+   npm run docker:down      # Stop Docker services
+   ```
+
+6. **Access the application**:
    - Frontend: http://localhost:4200
    - Backend API: http://localhost:3333
    - API Docs: http://localhost:3333/api
-   - Supabase Studio: http://localhost:54323
+   - Supabase Studio: http://localhost:3000
+   - Supabase API: http://localhost:8000
+
+### Why This Architecture?
+
+**Native Backend & Frontend**:
+- Instant hot reload - see changes immediately as you code
+- Better performance during development
+- Easier debugging with direct access to processes
+- Perfect for AI-assisted development (like with Claude Code)
+
+**Dockerized Supabase**:
+- Isolated database and auth services
+- Easy to reset and manage
+- Production-like environment
+- No conflicts with host machine
 
 ## Project Structure
 
@@ -279,6 +320,23 @@ curl -X POST http://localhost:3333/auth/login \
 
 ## Scripts Reference
 
+### Startup Scripts
+
+| Script | Description |
+|--------|-------------|
+| `./start.sh` | Start Supabase (Docker) + Backend + Frontend (PM2) |
+| `./stop.sh` | Stop all services (Docker + PM2) |
+| `npm run dev` | Start backend and frontend with PM2 (Supabase must be running) |
+| `npm run stop` | Stop PM2 processes |
+| `npm run restart` | Restart PM2 processes |
+| `npm run logs` | View all PM2 logs |
+| `npm run logs:backend` | View backend logs only |
+| `npm run logs:frontend` | View frontend logs only |
+| `npm run monit` | Interactive PM2 monitoring dashboard |
+| `npm run status` | Check PM2 process status |
+
+### Utility Scripts
+
 | Script | Description |
 |--------|-------------|
 | `setup.sh` | Initial setup - generates secrets, creates .env files |
@@ -289,16 +347,35 @@ curl -X POST http://localhost:3333/auth/login \
 | `monitor.sh` | Monitor service logs in real-time |
 | `generate-all.sh` | Generate OpenAPI spec and frontend types |
 
+### PM2 Commands
+
+PM2 is used to manage the backend and frontend processes:
+
+```bash
+pm2 status              # Check status of all processes
+pm2 logs                # View all logs (live tail)
+pm2 logs backend        # View backend logs only
+pm2 logs frontend       # View frontend logs only
+pm2 monit               # Interactive monitoring dashboard
+pm2 restart all         # Restart all processes
+pm2 restart backend     # Restart backend only
+pm2 restart frontend    # Restart frontend only
+pm2 stop all            # Stop all processes
+pm2 delete all          # Stop and remove all processes
+pm2 flush               # Clear all logs
+```
+
 ## Tech Stack
 
 - **Backend Framework**: NestJS 10+
 - **Frontend Framework**: Angular 17+
+- **Process Manager**: PM2 (for backend and frontend)
 - **Database**: PostgreSQL 15+ (via Supabase)
 - **Authentication**: Supabase Auth (GoTrue)
 - **API Gateway**: Kong
 - **Real-time**: Supabase Realtime
 - **Storage**: Supabase Storage
-- **Containerization**: Docker & Docker Compose
+- **Containerization**: Docker & Docker Compose (for Supabase services only)
 - **Type Generation**: openapi-typescript
 
 ## License
