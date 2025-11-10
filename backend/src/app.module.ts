@@ -5,7 +5,9 @@ import { AppService } from './app.service';
 import { SupabaseModule } from './supabase/supabase.module';
 import { AuthModule } from './auth/auth.module';
 import { ProjectsModule } from './projects/projects.module';
-import { MessagesModule } from './messages/messages.module';
+import { FilesModule } from './files/files.module';
+import { ChatModule } from './chat/chat.module';
+import { DeploymentsModule } from './deployments/deployments.module';
 
 @Module({
   imports: [
@@ -15,7 +17,9 @@ import { MessagesModule } from './messages/messages.module';
     AuthModule,
     SupabaseModule,
     ProjectsModule,
-    MessagesModule,
+    FilesModule,
+    ChatModule,
+    DeploymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,23 +1,50 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsIn,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateProjectDto {
   @ApiProperty({
     description: 'Project name',
-    example: 'My Chat Application',
-    maxLength: 255,
+    example: 'My Awesome App',
+    minLength: 1,
+    maxLength: 200,
   })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(255)
+  @MaxLength(200)
   name: string;
 
   @ApiProperty({
-    description: 'Optional project description',
-    example: 'A Lovable-style chat app with AI assistant',
+    description: 'Project description',
+    example: 'A cutting-edge web application built with React',
     required: false,
   })
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiProperty({
+    description: 'Frontend framework',
+    enum: ['react', 'vue', 'angular'],
+    example: 'react',
+    default: 'react',
+  })
+  @IsString()
+  @IsIn(['react', 'vue', 'angular'])
+  @IsOptional()
+  framework?: string;
+
+  @ApiProperty({
+    description: 'Project template',
+    example: 'blank',
+    default: 'blank',
+  })
+  @IsString()
+  @IsOptional()
+  template?: string;
 }

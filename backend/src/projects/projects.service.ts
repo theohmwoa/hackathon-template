@@ -21,11 +21,14 @@ export class ProjectsService {
   ): Promise<Project> {
     const supabase = this.supabaseService.getClient();
 
-    const { data, error } = await supabase
+    // Create project
+    const { data: project, error } = await supabase
       .from('projects')
       .insert({
         ...createProjectDto,
         user_id: userId,
+        framework: createProjectDto.framework || 'react',
+        template: createProjectDto.template || 'blank',
       })
       .select()
       .single();
@@ -35,7 +38,41 @@ export class ProjectsService {
       throw new Error(`Failed to create project: ${error.message}`);
     }
 
-    return data;
+    // Auto-generate starter files for 'blank' template
+    if (createProjectDto.template === 'blank' || !createProjectDto.template) {
+      const starterFiles = [
+        {
+          project_id: project.id,
+          file_path: 'App.tsx',
+          file_content: 'export default function App() { return <div>Hello World</div> }',
+          file_type: 'tsx',
+        },
+        {
+          project_id: project.id,
+          file_path: 'index.html',
+          file_content:
+            '<!DOCTYPE html><html><head><title>My App</title></head><body><div id="root"></div></body></html>',
+          file_type: 'html',
+        },
+        {
+          project_id: project.id,
+          file_path: 'styles.css',
+          file_content: 'body { margin: 0; font-family: sans-serif; }',
+          file_type: 'css',
+        },
+      ];
+
+      const { error: filesError } = await supabase
+        .from('project_files')
+        .insert(starterFiles);
+
+      if (filesError) {
+        this.logger.error(`Failed to create starter files: ${filesError.message}`);
+        // Don't throw - project is created, just log the error
+      }
+    }
+
+    return project;
   }
 
   async findAll(userId: string): Promise<Project[]> {
@@ -45,6 +82,7 @@ export class ProjectsService {
       .from('projects')
       .select('*')
       .eq('user_id', userId)
+      .order('last_opened_at', { ascending: false, nullsFirst: false })
       .order('created_at', { ascending: false });
 
     if (error) {
@@ -78,9 +116,6 @@ export class ProjectsService {
     updateProjectDto: UpdateProjectDto,
     userId: string,
   ): Promise<Project> {
-    // First verify the project exists and belongs to the user
-    await this.findOne(id, userId);
-
     const supabase = this.supabaseService.getClient();
 
     const { data, error } = await supabase
@@ -105,9 +140,6 @@ export class ProjectsService {
   }
 
   async remove(id: string, userId: string): Promise<void> {
-    // First verify the project exists and belongs to the user
-    await this.findOne(id, userId);
-
     const supabase = this.supabaseService.getClient();
 
     const { error } = await supabase
@@ -120,5 +152,26 @@ export class ProjectsService {
       this.logger.error(`Failed to delete project: ${error.message}`);
       throw new NotFoundException(`Project with ID ${id} not found`);
     }
+  }
+
+  async updateLastOpened(id: string, userId: string): Promise<Project> {
+    const supabase = this.supabaseService.getClient();
+
+    const { data, error } = await supabase
+      .from('projects')
+      .update({
+        last_opened_at: new Date().toISOString(),
+      })
+      .eq('id', id)
+      .eq('user_id', userId)
+      .select()
+      .single();
+
+    if (error || !data) {
+      this.logger.error(`Failed to update last_opened_at: ${error?.message || 'Not found'}`);
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+
+    return data;
   }
 }

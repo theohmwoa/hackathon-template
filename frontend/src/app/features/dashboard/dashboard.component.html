@@ -1,0 +1,140 @@
+<div class="dashboard">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="header-logo">WebFlow Pro</div>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="openNewProjectModal()">
+          <span class="icon-emoji">➕</span>
+          New Project
+        </button>
+        <button class="btn-icon" (click)="logout()" aria-label="Logout">
+          <span class="icon-emoji">🚪</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Loading State -->
+    <div *ngIf="loading && projects.length === 0" class="loading-container">
+      <div class="spinner" role="status" aria-label="Loading projects"></div>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-error" role="alert">
+      <strong>Error:</strong> {{ error }}
+      <button (click)="loadProjects()" class="btn-sm btn-secondary">Retry</button>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && projects.length === 0" class="empty-state">
+      <span class="icon-emoji" style="font-size: 64px;">📁</span>
+      <h3>No projects yet</h3>
+      <p>Create your first project to get started</p>
+      <button class="btn btn-primary" (click)="openNewProjectModal()">
+        <span class="icon-emoji">➕</span>
+        New Project
+      </button>
+    </div>
+
+    <!-- Projects Grid -->
+    <div *ngIf="!loading && projects.length > 0" class="projects-grid">
+      <div
+        *ngFor="let project of projects; let i = index"
+        class="project-card stagger-item"
+        [style.animation-delay]="i * 50 + 'ms'"
+        (click)="openProject(project)">
+        <!-- Thumbnail -->
+        <div class="project-thumbnail">
+          <div *ngIf="!project.thumbnail_url" class="project-thumbnail-placeholder">
+            <span>{{ project.name.charAt(0).toUpperCase() }}</span>
+          </div>
+          <img *ngIf="project.thumbnail_url" [src]="project.thumbnail_url" [alt]="project.name" />
+        </div>
+
+        <!-- Content -->
+        <div class="project-content">
+          <h3 class="project-name truncate">{{ project.name }}</h3>
+          <p class="project-meta">
+            Updated {{ getTimeAgo(project.last_opened_at || project.updated_at) }}
+          </p>
+          <div class="project-footer">
+            <span class="badge">{{ project.framework }}</span>
+            <button
+              class="btn-icon-small"
+              (click)="deleteProject(project, $event)"
+              aria-label="Delete project">
+              <span class="icon-emoji">🗑️</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Hover Overlay -->
+        <div class="project-overlay">
+          <span>Open</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- New Project Modal -->
+  <div *ngIf="showNewProjectModal" class="modal-backdrop" (click)="closeNewProjectModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()" style="width: 500px; padding: 32px;">
+      <h2 style="margin-bottom: 24px;">Create New Project</h2>
+
+      <form (ngSubmit)="createProject()">
+        <div class="form-group">
+          <label for="name">Name <span class="required">*</span></label>
+          <input
+            id="name"
+            type="text"
+            [(ngModel)]="newProject.name"
+            name="name"
+            placeholder="My Awesome Project"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            [(ngModel)]="newProject.description"
+            name="description"
+            placeholder="Describe your project..."
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="framework">Framework <span class="required">*</span></label>
+          <select id="framework" [(ngModel)]="newProject.framework" name="framework" required>
+            <option value="react">React</option>
+            <option value="vue">Vue</option>
+            <option value="angular">Angular</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="template">Template <span class="required">*</span></label>
+          <select id="template" [(ngModel)]="newProject.template" name="template" required>
+            <option value="blank">Blank</option>
+            <option value="landing">Landing Page</option>
+            <option value="dashboard">Dashboard</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 12px; margin-top: 24px;">
+          <button type="submit" class="btn btn-primary" [disabled]="!newProject.name">
+            Create Project
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="closeNewProjectModal()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

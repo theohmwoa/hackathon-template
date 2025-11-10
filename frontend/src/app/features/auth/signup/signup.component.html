@@ -1,0 +1,101 @@
+<div class="auth-page">
+  <!-- Left Side: Form -->
+  <div class="auth-form-side">
+    <div class="auth-form-container">
+      <div class="auth-logo">WebFlow Pro</div>
+
+      <h1 class="auth-title">Create account</h1>
+
+      <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <!-- Error Alert -->
+        <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Success Alert -->
+        <div *ngIf="successMessage" class="alert alert-success" role="alert">
+          {{ successMessage }}
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="you@example.com"
+            [class.is-invalid]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+          />
+          <div
+            *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
+            class="invalid-feedback">
+            Please enter a valid email
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="At least 6 characters"
+            [class.is-invalid]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+          />
+          <div
+            *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+            class="invalid-feedback">
+            Password must be at least 6 characters
+          </div>
+        </div>
+
+        <!-- Confirm Password Field -->
+        <div class="form-group">
+          <label for="confirmPassword">Confirm Password</label>
+          <input
+            id="confirmPassword"
+            type="password"
+            formControlName="confirmPassword"
+            placeholder="Re-enter password"
+            [class.is-invalid]="signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched"
+          />
+          <div
+            *ngIf="signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched"
+            class="invalid-feedback">
+            Passwords do not match
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="signupForm.invalid || loading"
+          [attr.aria-busy]="loading">
+          <span *ngIf="!loading">Create Account</span>
+          <span *ngIf="loading">
+            <span class="spinner-small" aria-hidden="true"></span>
+            Creating account...
+          </span>
+        </button>
+      </form>
+
+      <!-- Login Link -->
+      <div class="auth-link">
+        Already have an account? <a routerLink="/login">Log in</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Branding -->
+  <div class="auth-visual-side">
+    <div class="auth-visual-content">
+      <h2>Join 10,000+ developers building with AI</h2>
+      <div class="auth-visual-image">
+        <img src="https://placehold.co/600x400" alt="WebFlow Pro Platform" />
+      </div>
+    </div>
+  </div>
+</div>

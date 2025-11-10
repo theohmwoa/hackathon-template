@@ -37,7 +37,7 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Create a new project' })
   @ApiResponse({
     status: 201,
-    description: 'Project successfully created',
+    description: 'Project successfully created with starter files',
     type: Project,
   })
   @ApiResponse({ status: 400, description: 'Invalid input' })
@@ -53,7 +53,7 @@ export class ProjectsController {
   @ApiOperation({ summary: 'Get all user projects' })
   @ApiResponse({
     status: 200,
-    description: 'List of user projects',
+    description: 'List of user projects sorted by last_opened_at DESC',
     type: [Project],
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
@@ -123,5 +123,26 @@ export class ProjectsController {
     @CurrentUser() user: User,
   ): Promise<void> {
     return this.projectsService.remove(id, user.id);
+  }
+
+  @Patch(':id/open')
+  @ApiOperation({ summary: 'Update last_opened_at timestamp to current time' })
+  @ApiParam({
+    name: 'id',
+    description: 'Project ID',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Project last_opened_at successfully updated',
+    type: Project,
+  })
+  @ApiResponse({ status: 404, description: 'Project not found' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  updateLastOpened(
+    @Param('id') id: string,
+    @CurrentUser() user: User,
+  ): Promise<Project> {
+    return this.projectsService.updateLastOpened(id, user.id);
   }
 }

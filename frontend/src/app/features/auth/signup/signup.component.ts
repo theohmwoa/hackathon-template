@@ -8,75 +8,8 @@ import { SupabaseService } from '@app/core/services/supabase.service';
   selector: 'app-signup',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
-  template: `
-    <!-- UNSTYLED TEMPLATE: Style this form according to your design requirements -->
-    <div class="auth-container">
-      <div class="auth-card">
-        <h1>Sign Up</h1>
-
-        <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              placeholder="you@example.com"
-              [class.error]="signupForm.get('email')?.invalid && signupForm.get('email')?.touched"
-            />
-            <div class="error-message" *ngIf="signupForm.get('email')?.invalid && signupForm.get('email')?.touched">
-              Please enter a valid email
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              formControlName="password"
-              placeholder="At least 6 characters"
-              [class.error]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
-            />
-            <div class="error-message" *ngIf="signupForm.get('password')?.invalid && signupForm.get('password')?.touched">
-              Password must be at least 6 characters
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="confirmPassword">Confirm Password</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              formControlName="confirmPassword"
-              placeholder="Re-enter password"
-              [class.error]="signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched"
-            />
-            <div class="error-message" *ngIf="signupForm.hasError('passwordMismatch') && signupForm.get('confirmPassword')?.touched">
-              Passwords do not match
-            </div>
-          </div>
-
-          <div class="error-message" *ngIf="errorMessage">
-            {{ errorMessage }}
-          </div>
-
-          <div class="success-message" *ngIf="successMessage">
-            {{ successMessage }}
-          </div>
-
-          <button type="submit" [disabled]="signupForm.invalid || loading">
-            {{ loading ? 'Signing up...' : 'Sign Up' }}
-          </button>
-        </form>
-
-        <div class="auth-link">
-          Already have an account? <a routerLink="/login">Login</a>
-        </div>
-      </div>
-    </div>
-  `,
-  styles: []
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent {
   signupForm: FormGroup;
@@ -117,11 +50,11 @@ export class SignupComponent {
       const { email, password } = this.signupForm.value;
       await this.supabaseService.signUp(email, password);
 
-      this.successMessage = 'Account created successfully! Redirecting to home...';
+      this.successMessage = 'Account created successfully! Redirecting to dashboard...';
 
-      // Redirect to home after successful signup
+      // Redirect to dashboard after successful signup
       setTimeout(() => {
-        this.router.navigate(['/']);
+        this.router.navigate(['/dashboard']);
       }, 2000);
     } catch (error: any) {
       this.errorMessage = error.message || 'Signup failed. Please try again.';

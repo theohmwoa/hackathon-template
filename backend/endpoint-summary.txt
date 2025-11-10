@@ -1,0 +1,171 @@
+================================================================================
+WEBFLOW PRO - BACKEND API ENDPOINTS SUMMARY
+================================================================================
+
+BASE URL: http://localhost:3333
+
+AUTHENTICATION:
+  Header: Authorization: Bearer <jwt_token>
+  All endpoints require auth except health checks
+
+================================================================================
+1. PROJECTS MODULE
+================================================================================
+
+CREATE PROJECT (with starter files auto-generation)
+  POST /projects
+  Body: { "name": "My App", "description": "...", "framework": "react", "template": "blank" }
+  → Creates project + 3 starter files (App.tsx, index.html, styles.css)
+
+LIST USER PROJECTS (sorted by last_opened_at DESC)
+  GET /projects
+  → Returns array of user's projects
+
+GET PROJECT BY ID
+  GET /projects/:id
+  → Returns single project with all fields
+
+UPDATE PROJECT
+  PATCH /projects/:id
+  Body: { "name": "...", "thumbnail_url": "...", "is_deployed": true, "deployment_url": "..." }
+  → Updates project metadata
+
+DELETE PROJECT (cascade deletes files, messages, deployments)
+  DELETE /projects/:id
+  → Returns 204 No Content
+
+UPDATE LAST OPENED
+  PATCH /projects/:id/open
+  → Updates last_opened_at to current timestamp
+
+================================================================================
+2. FILES MODULE
+================================================================================
+
+CREATE FILE
+  POST /projects/:projectId/files
+  Body: { "file_path": "src/App.tsx", "file_content": "...", "file_type": "tsx" }
+  → Creates file (validates uniqueness of file_path within project)
+
+LIST PROJECT FILES (sorted by created_at ASC)
+  GET /projects/:projectId/files
+  → Returns array of files for project
+
+GET FILE BY ID
+  GET /files/:id
+  → Returns single file with content
+
+UPDATE FILE CONTENT
+  PATCH /files/:id
+  Body: { "file_content": "..." }
+  → Updates only file content
+
+DELETE FILE
+  DELETE /files/:id
+  → Returns 204 No Content
+
+VALIDATION:
+  - file_type must be: tsx, css, html, json
+  - file_path must be unique per project
+
+================================================================================
+3. CHAT MODULE (Mock AI)
+================================================================================
+
+SEND MESSAGE TO AI
+  POST /projects/:projectId/messages
+  Body: { "content": "Can you add a button?" }
+  → Saves user message, generates AI response, returns both
+
+GET CHAT HISTORY (sorted by created_at ASC)
+  GET /projects/:projectId/messages
+  → Returns all messages for project (user + assistant)
+
+MOCK AI KEYWORDS:
+  - "button" → "I've added a button component..."
+  - "navbar"/"navigation" → "I've created a responsive navigation bar..."
+  - "deploy"/"deployment" → "To deploy your project, click the Deploy button..."
+  - default → "I understand you want to [message preview]..."
+
+================================================================================
+4. DEPLOYMENTS MODULE (Mock Deployment)
+================================================================================
+
+TRIGGER DEPLOYMENT
+  POST /projects/:projectId/deploy
+  → Creates deployment with status='pending', auto-progresses in background
+
+GET DEPLOYMENT HISTORY (sorted by created_at DESC)
+  GET /projects/:projectId/deployments
+  → Returns deployment history for project
+
+GET DEPLOYMENT STATUS
+  GET /deployments/:id
+  → Returns current deployment status and details
+
+GET BUILD LOGS
+  GET /deployments/:id/logs
+  → Returns { "logs": "..." }
+
+MOCK DEPLOYMENT FLOW:
+  1. pending (0s) → Returns immediately
+  2. building (2s) → Adds build logs
+  3. deploying (5s) → Adds deployment logs
+  4. success (7s) → Generates URL: https://{name}-{random}.webflowpro.app
+                    Updates project.is_deployed = true
+                    Updates project.deployment_url
+
+================================================================================
+ERROR RESPONSES
+================================================================================
+
+400 Bad Request
+  - Invalid input (validation failed)
+  - Duplicate file path
+  - Invalid file_type
+
+401 Unauthorized
+  - Missing authentication token
+  - Invalid/expired JWT token
+
+404 Not Found
+  - Project not found
+  - File not found
+  - Deployment not found
+  - User doesn't own resource
+
+500 Internal Server Error
+  - Database errors
+  - Unexpected server errors
+
+================================================================================
+DATA RELATIONSHIPS
+================================================================================
+
+User (auth.users)
+  └─→ Projects (1:N)
+        ├─→ Files (1:N, cascade delete)
+        ├─→ Messages (1:N, cascade delete)
+        └─→ Deployments (1:N, cascade delete)
+
+- All tables use Row Level Security (RLS)
+- Queries automatically filtered by authenticated user
+- Deleting a project cascades to all child resources
+
+================================================================================
+OPENAPI SPEC
+================================================================================
+
+Location: backend/openapi.json (31 KB)
+Format: OpenAPI 3.0
+Endpoints: 15+
+Schemas: All DTOs and entities documented
+
+Use for:
+- Frontend code generation (TypeScript types)
+- API testing (Postman, Swagger UI)
+- Documentation (Redoc, Swagger UI)
+
+================================================================================
+END OF ENDPOINT SUMMARY
+================================================================================

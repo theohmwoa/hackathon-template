@@ -8,7 +8,7 @@ import { UiService } from '../../services/ui.service';
 import { components } from '@api/types';
 
 type Project = components['schemas']['Project'];
-type Message = components['schemas']['Message'];
+type Message = components['schemas']['ChatMessage'];
 
 @Component({
   selector: 'app-chat-sidebar',

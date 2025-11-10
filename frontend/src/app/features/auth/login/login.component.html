@@ -1,0 +1,79 @@
+<div class="auth-page">
+  <!-- Left Side: Form -->
+  <div class="auth-form-side">
+    <div class="auth-form-container">
+      <div class="auth-logo">WebFlow Pro</div>
+
+      <h1 class="auth-title">Welcome back</h1>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <!-- Error Alert -->
+        <div *ngIf="errorMessage" class="alert alert-error" role="alert">
+          {{ errorMessage }}
+        </div>
+
+        <!-- Email Field -->
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="you@example.com"
+            [class.is-invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+          />
+          <div
+            *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+            class="invalid-feedback">
+            Please enter a valid email
+          </div>
+        </div>
+
+        <!-- Password Field -->
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            formControlName="password"
+            placeholder="Enter your password"
+            [class.is-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+          />
+          <div
+            *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+            class="invalid-feedback">
+            Password must be at least 6 characters
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button
+          type="submit"
+          class="btn btn-primary"
+          [disabled]="loginForm.invalid || loading"
+          [attr.aria-busy]="loading">
+          <span *ngIf="!loading">Log in</span>
+          <span *ngIf="loading">
+            <span class="spinner-small" aria-hidden="true"></span>
+            Logging in...
+          </span>
+        </button>
+      </form>
+
+      <!-- Sign Up Link -->
+      <div class="auth-link">
+        Don't have an account? <a routerLink="/signup">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Side: Branding -->
+  <div class="auth-visual-side">
+    <div class="auth-visual-content">
+      <h2>Join 10,000+ developers building with AI</h2>
+      <div class="auth-visual-image">
+        <img src="https://placehold.co/600x400" alt="WebFlow Pro Platform" />
+      </div>
+    </div>
+  </div>
+</div>
